@@ -1,0 +1,6 @@
+build*
+*.user
+node_modules
+package-lock.json
+auto.gypi
+auto-top.gypi

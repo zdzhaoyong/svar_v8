@@ -1,0 +1,24 @@
+{
+  "name": "svar",
+  "version": "0.2.0",
+  "main": "index.js",
+  "os": [
+    "win32",
+    "linux"
+  ],
+  "cpu": "x64",
+  "private": true,
+  "scripts": {
+    "autogypi": "autogypi",
+    "node-gyp": "node-gyp",
+    "install": "autogypi && node-gyp rebuild"
+  },
+  "dependencies": {
+    "autogypi": "^0.2.2",
+    "nbind": "^0.3.15",
+    "node-gyp": "^3.8.0"
+  },
+  "devDependencies": {
+    "jimp": "^0.5.6"
+  }
+}
