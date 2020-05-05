@@ -148,18 +148,22 @@ public:
         }
 
         if("function"==typeName){
-            Local<Function> func=n.As<Function>();
+            std::shared_ptr<Nan::Persistent<Function>> func=std::make_shared<Nan::Persistent<Function>>(n.As<Function>());
 
             std::shared_ptr<SvarFunction> svarfunc=std::make_shared<SvarFunction>();
 
             svarfunc->_func=[func](std::vector<Svar>& args)->Svar{
                 Nan::AsyncResource resource("nan:makeCallback");
+                Nan::Persistent<Function>& con=*func;
+                v8::Local<v8::Function> cons =Nan::New<v8::Function>(con);
+
                 std::vector<Local<Value> > jsargs;
                 for(Svar& arg:args)
                     jsargs.push_back(getNode(arg));
                 return fromNode(resource.runInAsyncScope(Nan::GetCurrentContext()->Global(),
-                                                         func, jsargs.size(), jsargs.data()).ToLocalChecked());
+                                                         cons, jsargs.size(), jsargs.data()).ToLocalChecked());
             };
+            svarfunc->do_argcheck=false;
 
             return svarfunc;
         };
