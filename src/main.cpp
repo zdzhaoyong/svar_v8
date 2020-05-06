@@ -129,7 +129,7 @@ public:
         {
             if(n->IsArray()){
                 v8::Local<v8::Array> arr = n.As<v8::Array>();
-                std::vector<Svar>    val;
+                std::vector<Svar>    val(arr->Length());
 
                 // Length of arr is checked in checkType().
                 for(uint32_t num = 0; num < arr->Length(); ++num) {
@@ -144,7 +144,21 @@ public:
 
                 return(val);
             }
-            return n->IsArray();
+            else if(n->IsObject()){
+                Local<Object> obj=n.As<Object>();
+                Svar val=Svar::object();
+
+                Local<Array>  name_array = obj->GetOwnPropertyNames();
+                for(int i=0;i<name_array->Length();++i){
+                    auto name=Nan::Get(name_array,i).ToLocalChecked();
+                    Local<Value> o=obj->Get(name);
+                    val[stdString(name)]= fromNode(o);
+                }
+//                std::cout<<val<<std::endl;
+                return val;
+            }
+            else
+                return Svar();
         }
 
         if("function"==typeName){
